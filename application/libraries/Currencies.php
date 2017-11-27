@@ -33,7 +33,7 @@ class Currencies
         $this->CI =& get_instance();
         $time_query = $this->CI->db->query("SELECT MIN(time_set) FROM currencies");
         $time_since_update = time()-get_object_vars($time_query->result()[0])['MIN(time_set)'];
-        if ($time_since_update>1)
+        if ($time_since_update>432000)
         {
             $code_query = $this->CI->db->query("SELECT code FROM currencies");
             $codes = array_map(function($row)
