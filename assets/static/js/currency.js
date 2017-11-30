@@ -37,7 +37,9 @@
             });
 
             targets.select.forEach((el) => el.value = newCurrency);
-
+            targets.toggle.forEach((el) => {
+                el.textContent = el.textContent.replace(/ \(\S+\)/,` (${currencyData[newCurrency].symbol})`)
+            });
             const jsonHeaders = new Headers({
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'});

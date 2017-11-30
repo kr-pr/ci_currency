@@ -9,7 +9,6 @@ class Currencies
     {
         function fetch_rates($url, $codes)
         {
-            print_r($url);
             $code_string = implode(',',$codes);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url."&currencies={$code_string}");
@@ -33,7 +32,7 @@ class Currencies
         $this->CI =& get_instance();
         $time_query = $this->CI->db->query("SELECT MIN(time_set) FROM currencies");
         $time_since_update = time()-get_object_vars($time_query->result()[0])['MIN(time_set)'];
-        if ($time_since_update>432000)
+        if ($time_since_update>172800)
         {
             $code_query = $this->CI->db->query("SELECT code FROM currencies");
             $codes = array_map(function($row)
@@ -74,12 +73,13 @@ class Currencies
     {
         $switch_text = array(
             'en' => 'Change shown currency',
-            'pt' => 'Mudar a moeda mostrada',
+            'pt' => 'Alterar a moeda atual',
             'es' => 'Cambiar moneda mostrada',
             'fr' => 'Modifier la devise affichée'
         );
+        $current_symbol = $this->current_currency()['symbol'];
         $lang = $this->CI->session->userdata('site_lang') ?: 'en';
-        $link_text = $switch_text[$lang];
+        $link_text = $switch_text[$lang]." ({$current_symbol})";
         $html = "<a data-id=\"{$id}\" class=\"toggle-currency-selector\">{$link_text}?</a>";
         return $html;
     }
@@ -91,7 +91,7 @@ class Currencies
         $symbol = $current['symbol'];
 
         $value = number_format($price / 100, 2);
-        $html = "<p class=\"price\" data-price=\"{$base_price}\">{$value}{$symbol}</p>";
+        $html = "<p style=\"display: inline;\" class=\"price\" data-price=\"{$base_price}\">{$value}{$symbol}</p>";
 
         return $html;
     }
